@@ -1,0 +1,29 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+span {
+  font-weight: 500;
+}
+
+input {
+  border-radius: 10px;
+  border: 1px solid var(--color-border);
+  padding: 0.75rem 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+}
+
+small {
+  color: var(--color-muted);
+}
+
+.error {
+  color: var(--color-danger);
+}

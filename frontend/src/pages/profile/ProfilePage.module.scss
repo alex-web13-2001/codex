@@ -1,0 +1,18 @@
+.profile {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.card {
+  background: var(--color-surface);
+  border-radius: 16px;
+  padding: 1.5rem;
+  border: 1px solid var(--color-border);
+}
+
+select {
+  border-radius: 10px;
+  border: 1px solid var(--color-border);
+  padding: 0.75rem 1rem;
+}

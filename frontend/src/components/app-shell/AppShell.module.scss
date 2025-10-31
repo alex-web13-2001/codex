@@ -1,0 +1,51 @@
+.appShell {
+  display: grid;
+  grid-template-columns: var(--sidebar-width) 1fr;
+  grid-template-rows: auto 1fr;
+  min-height: 100vh;
+  background: var(--color-surface-alt);
+}
+
+.sidebar {
+  grid-row: 1 / span 2;
+  background: var(--color-surface);
+  border-right: 1px solid var(--color-border);
+  transition: transform 0.3s ease;
+}
+
+.sidebarClosed {
+  transform: translateX(-100%);
+  position: absolute;
+  z-index: 10;
+}
+
+.header {
+  grid-column: 2 / 3;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.content {
+  grid-column: 2 / 3;
+  padding: 1.5rem;
+}
+
+@media (max-width: 1024px) {
+  .appShell {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    width: min(80vw, 320px);
+    z-index: 20;
+    box-shadow: 0 10px 40px rgba(15, 23, 42, 0.16);
+  }
+
+  .header,
+  .content {
+    grid-column: 1 / 2;
+  }
+}

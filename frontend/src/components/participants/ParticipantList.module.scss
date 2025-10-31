@@ -1,0 +1,57 @@
+.wrapper {
+  border-radius: 16px;
+  background: var(--color-surface);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+li {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 1rem;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(79, 70, 229, 0.12);
+  display: grid;
+  place-items: center;
+  font-weight: 600;
+}
+
+strong {
+  display: block;
+}
+
+span {
+  color: var(--color-muted);
+}
+
+.role {
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(79, 70, 229, 0.08);
+  color: var(--color-primary-dark);
+  text-transform: capitalize;
+  font-size: 0.8rem;
+}
