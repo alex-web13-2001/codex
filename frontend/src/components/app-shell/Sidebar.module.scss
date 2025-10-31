@@ -1,0 +1,56 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 1.5rem 1rem;
+  gap: 2rem;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.navSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.navLink {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  color: var(--color-muted);
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.navLink svg {
+  flex-shrink: 0;
+}
+
+.navLink:hover,
+.navLinkActive {
+  background: rgba(79, 70, 229, 0.1);
+  color: var(--color-primary);
+}
+
+.sectionLabel {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  letter-spacing: 0.08em;
+}
+
+.footer {
+  margin-top: auto;
+  padding: 1rem;
+  border-radius: 12px;
+  background: rgba(79, 70, 229, 0.08);
+  color: var(--color-primary-dark);
+}

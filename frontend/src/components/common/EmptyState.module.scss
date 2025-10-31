@@ -1,0 +1,29 @@
+.emptyState {
+  border: 2px dashed var(--color-border);
+  border-radius: 16px;
+  padding: 2rem;
+  display: grid;
+  place-items: center;
+  gap: 0.75rem;
+  text-align: center;
+  color: var(--color-muted);
+  background: rgba(79, 70, 229, 0.04);
+}
+
+.icon {
+  font-size: 2rem;
+}
+
+h3 {
+  margin: 0;
+  color: var(--color-text);
+}
+
+p {
+  margin: 0;
+  max-width: 420px;
+}
+
+.action {
+  margin-top: 0.5rem;
+}

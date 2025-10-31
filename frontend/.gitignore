@@ -1,0 +1,6 @@
+node_modules
+dist
+coverage
+.storybook
+.vscode
+.DS_Store
