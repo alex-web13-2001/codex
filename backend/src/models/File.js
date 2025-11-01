@@ -2,16 +2,30 @@ const mongoose = require('mongoose');
 
 const fileSchema = new mongoose.Schema(
   {
-    project: { type: mongoose.Schema.Types.ObjectId, ref: 'Project', required: true },
+    owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    project: { type: mongoose.Schema.Types.ObjectId, ref: 'Project' },
     task: { type: mongoose.Schema.Types.ObjectId, ref: 'Task' },
-    uploader: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     originalName: { type: String, required: true },
     storageKey: { type: String, required: true },
-    mimeType: { type: String },
-    size: { type: Number },
-    url: { type: String },
+    mimeType: { type: String, required: true },
+    size: { type: Number, required: true },
+    url: { type: String, required: true },
   },
   { timestamps: true }
 );
+
+fileSchema.index({ project: 1, task: 1 });
+
+fileSchema.set('toJSON', {
+  virtuals: true,
+  transform: (_doc, ret) => {
+    ret.id = ret._id.toString();
+    delete ret._id;
+    delete ret.__v;
+    return ret;
+  },
+});
+
+fileSchema.set('toObject', { virtuals: true });
 
 module.exports = mongoose.model('File', fileSchema);

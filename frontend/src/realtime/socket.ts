@@ -37,9 +37,10 @@ export const getSocket = () => {
       const store = useProjectStore.getState();
       const project = store.projects.find((item) => item.id === projectId);
       if (!project) return;
-      const tasks = project.tasks.some((item) => item.id === task.id)
-        ? project.tasks.map((item) => (item.id === task.id ? task : item))
-        : [...project.tasks, task];
+      const existingTasks = project.tasks ?? [];
+      const tasks = existingTasks.some((item) => item.id === task.id)
+        ? existingTasks.map((item) => (item.id === task.id ? task : item))
+        : [...existingTasks, task];
       store.upsertProject({ ...project, tasks });
     });
   }

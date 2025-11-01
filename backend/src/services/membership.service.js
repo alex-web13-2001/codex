@@ -5,12 +5,19 @@ const ApiError = require('../utils/ApiError');
 const listMembers = (projectId) => Membership.find({ project: projectId }).populate('user');
 
 const updateRole = async (projectId, membershipId, role, currentUser) => {
+  const allowedRoles = ['owner', 'collaborator', 'member', 'viewer'];
+  if (!allowedRoles.includes(role)) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Unknown role');
+  }
   const membership = await Membership.findOne({ _id: membershipId, project: projectId });
   if (!membership) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Membership not found');
   }
   if (membership.user.equals(currentUser)) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Cannot change own role');
+  }
+  if (membership.role === 'owner') {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Нельзя изменить роль владельца');
   }
   membership.role = role;
   await membership.save();
@@ -24,6 +31,9 @@ const removeMember = async (projectId, membershipId, currentUser) => {
   }
   if (membership.user.equals(currentUser)) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Cannot remove yourself');
+  }
+  if (membership.role === 'owner') {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Владельца нельзя удалить из проекта');
   }
   await Membership.deleteOne({ _id: membershipId });
 };

@@ -14,7 +14,7 @@ const register = async ({ email, password, name }) => {
   if (await User.isEmailTaken(email)) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
   }
-  const user = new User({ email, name });
+  const user = new User({ email, name, status: 'pending' });
   await user.setPassword(password);
 
   const rawToken = crypto.randomBytes(32).toString('hex');
@@ -32,9 +32,18 @@ const login = async ({ email, password }) => {
   if (!user || !(await user.isPasswordMatch(password))) {
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Incorrect email or password');
   }
+  if (!user.isEmailVerified) {
+    throw new ApiError(httpStatus.FORBIDDEN, 'Email is not verified');
+  }
+  if (user.status === 'disabled') {
+    throw new ApiError(httpStatus.FORBIDDEN, 'Account disabled');
+  }
 
   const tokens = generateAuthTokens(user.id);
   await user.addRefreshToken(tokens.refresh.token, tokens.refresh.expires);
+  user.lastLoginAt = new Date();
+  user.status = 'active';
+  await user.save();
   return { user, tokens };
 };
 
@@ -74,6 +83,7 @@ const verifyEmail = async (token) => {
   }
   user.isEmailVerified = true;
   user.verificationToken = undefined;
+  user.status = 'active';
   await user.save();
   return user;
 };

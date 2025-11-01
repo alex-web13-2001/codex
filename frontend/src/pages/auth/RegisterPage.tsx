@@ -11,7 +11,7 @@ const RegisterPage = () => {
   const navigate = useNavigate();
   const setUser = useAuthStore((state) => state.setUser);
   const setToken = useAuthStore((state) => state.setToken);
-  const [fullName, setFullName] = useState('New Member');
+  const [name, setName] = useState('New Member');
   const [email, setEmail] = useState('new.member@example.com');
   const [password, setPassword] = useState('password');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -20,14 +20,14 @@ const RegisterPage = () => {
     event.preventDefault();
     setIsSubmitting(true);
     try {
-      const response = await registerRequest({ fullName, email, password });
+      const response = await registerRequest({ name, email, password });
       setUser(response.user);
       setToken(response.token);
       toast.success('Account created');
       navigate('/dashboard');
     } catch (error) {
       console.warn('Falling back to offline register mode', error);
-      setUser({ id: 'offline', email, fullName, role: 'member', locale: 'en' });
+      setUser({ id: 'offline', email, name, role: 'member' });
       setToken('mock-token');
       toast.success('Account created (offline mode)');
       navigate('/dashboard');
@@ -47,12 +47,7 @@ const RegisterPage = () => {
       }
     >
       <form className="form-grid" onSubmit={handleSubmit}>
-        <TextField
-          label="Full name"
-          value={fullName}
-          onChange={(event) => setFullName(event.target.value)}
-          required
-        />
+        <TextField label="Full name" value={name} onChange={(event) => setName(event.target.value)} required />
         <TextField
           label="Email"
           type="email"

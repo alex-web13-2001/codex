@@ -14,7 +14,7 @@ export const login = async (email: string, password: string): Promise<AuthRespon
 export const register = async (payload: {
   email: string;
   password: string;
-  fullName: string;
+  name: string;
 }): Promise<AuthResponse> => {
   const { data } = await apiClient.post<AuthResponse>('/auth/register', payload);
   return data;

@@ -16,7 +16,7 @@ router.patch(
   '/:projectId',
   auth(),
   projectMembership,
-  authorizeProjectRole(['owner', 'admin']),
+  authorizeProjectRole(['owner', 'collaborator']),
   projectController.updateProject
 );
 router.delete(
@@ -27,19 +27,35 @@ router.delete(
   projectController.deleteProject
 );
 
+router.post(
+  '/:projectId/archive',
+  auth(),
+  projectMembership,
+  authorizeProjectRole(['owner']),
+  projectController.archiveProject
+);
+
+router.post(
+  '/:projectId/restore',
+  auth(),
+  projectMembership,
+  authorizeProjectRole(['owner']),
+  projectController.restoreProject
+);
+
 router.get('/:projectId/members', auth(), projectMembership, projectController.listMembers);
 router.patch(
   '/:projectId/members/:membershipId',
   auth(),
   projectMembership,
-  authorizeProjectRole(['owner', 'admin']),
+  authorizeProjectRole(['owner', 'collaborator']),
   projectController.updateMemberRole
 );
 router.delete(
   '/:projectId/members/:membershipId',
   auth(),
   projectMembership,
-  authorizeProjectRole(['owner', 'admin']),
+  authorizeProjectRole(['owner', 'collaborator']),
   projectController.removeMember
 );
 
@@ -47,7 +63,7 @@ router.post(
   '/:projectId/invitations',
   auth(),
   projectMembership,
-  authorizeProjectRole(['owner', 'admin']),
+  authorizeProjectRole(['owner', 'collaborator']),
   projectController.createInvitation
 );
 router.get('/:projectId/invitations', auth(), projectMembership, projectController.listInvitations);
@@ -57,7 +73,7 @@ router.post(
   '/:projectId/columns',
   auth(),
   projectMembership,
-  authorizeProjectRole(['owner', 'admin']),
+  authorizeProjectRole(['owner', 'collaborator']),
   projectController.createColumn
 );
 router.get('/:projectId/columns', auth(), projectMembership, projectController.listColumns);
@@ -65,14 +81,14 @@ router.patch(
   '/:projectId/columns/:columnId',
   auth(),
   projectMembership,
-  authorizeProjectRole(['owner', 'admin']),
+  authorizeProjectRole(['owner', 'collaborator']),
   projectController.updateColumn
 );
 router.delete(
   '/:projectId/columns/:columnId',
   auth(),
   projectMembership,
-  authorizeProjectRole(['owner', 'admin']),
+  authorizeProjectRole(['owner', 'collaborator']),
   projectController.deleteColumn
 );
 
@@ -87,7 +103,7 @@ router.post(
   '/:projectId/categories',
   auth(),
   projectMembership,
-  authorizeProjectRole(['owner', 'admin']),
+  authorizeProjectRole(['owner', 'collaborator']),
   projectController.createCategory
 );
 router.get('/:projectId/categories', auth(), projectMembership, projectController.listCategories);
@@ -95,14 +111,14 @@ router.patch(
   '/:projectId/categories/:categoryId',
   auth(),
   projectMembership,
-  authorizeProjectRole(['owner', 'admin']),
+  authorizeProjectRole(['owner', 'collaborator']),
   projectController.updateCategory
 );
 router.delete(
   '/:projectId/categories/:categoryId',
   auth(),
   projectMembership,
-  authorizeProjectRole(['owner', 'admin']),
+  authorizeProjectRole(['owner', 'collaborator']),
   projectController.deleteCategory
 );
 
@@ -110,7 +126,7 @@ router.post(
   '/:projectId/tags',
   auth(),
   projectMembership,
-  authorizeProjectRole(['owner', 'admin']),
+  authorizeProjectRole(['owner', 'collaborator']),
   projectController.createTag
 );
 router.get('/:projectId/tags', auth(), projectMembership, projectController.listTags);
@@ -118,14 +134,14 @@ router.patch(
   '/:projectId/tags/:tagId',
   auth(),
   projectMembership,
-  authorizeProjectRole(['owner', 'admin']),
+  authorizeProjectRole(['owner', 'collaborator']),
   projectController.updateTag
 );
 router.delete(
   '/:projectId/tags/:tagId',
   auth(),
   projectMembership,
-  authorizeProjectRole(['owner', 'admin']),
+  authorizeProjectRole(['owner', 'collaborator']),
   projectController.deleteTag
 );
 
@@ -134,7 +150,7 @@ router.post(
   '/:projectId/columns/:columnId/archive',
   auth(),
   projectMembership,
-  authorizeProjectRole(['owner', 'admin']),
+  authorizeProjectRole(['owner', 'collaborator']),
   projectController.archiveColumn
 );
 

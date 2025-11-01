@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { v4: uuid } = require('uuid');
 const env = require('../config/env');
+const { ALLOWED_FILE_MIME_TYPES } = require('../config/constants');
 
 class FileService {
   constructor() {
@@ -14,7 +15,18 @@ class FileService {
     }
   }
 
-  async upload({ buffer, originalName, mimetype }) {
+  validateFile({ mimetype, size, originalName }) {
+    if (!ALLOWED_FILE_MIME_TYPES.includes(mimetype)) {
+      throw new Error(`Формат файла "${originalName}" не поддерживается`);
+    }
+    if (size > 50 * 1024 * 1024) {
+      throw new Error('Размер файла не должен превышать 50 МБ');
+    }
+  }
+
+  async upload({ buffer, originalName, mimetype, size }) {
+    this.validateFile({ mimetype, size, originalName });
+
     if (this.driver !== 'local') {
       throw new Error('Only local storage driver is implemented in this environment');
     }
@@ -28,6 +40,7 @@ class FileService {
       url: `${env.baseUrl}/files/${fileName}`,
       originalName,
       mimeType: mimetype,
+      size,
     };
   }
 

@@ -1,19 +1,38 @@
 import apiClient from './client';
-import type { Task } from '@/types/task';
-import type { PaginatedResponse } from '@/types/common';
+import type { Task, TaskPriority } from '@/types/task';
 
-export const fetchTasks = async (page = 1, status?: string): Promise<PaginatedResponse<Task>> => {
-  const { data } = await apiClient.get<PaginatedResponse<Task>>('/tasks', {
-    params: { page, status }
-  });
-  return data;
+type TaskListResponse = { tasks: Task[] };
+type TaskResponse = { task: Task };
+
+type UpsertTaskPayload = {
+  projectId: string;
+  id?: string;
+  title?: string;
+  description?: string;
+  dueDate?: string;
+  deadline?: string;
+  column?: string;
+  tags?: string[];
+  priority?: TaskPriority;
+  assignee?: string;
+  category?: string;
+  order?: number;
 };
 
-export const upsertTask = async (payload: Partial<Task>): Promise<Task> => {
-  const { data } = await apiClient.post<Task>('/tasks', payload);
-  return data;
+export const fetchProjectTasks = async (projectId: string): Promise<Task[]> => {
+  const { data } = await apiClient.get<TaskListResponse>(`/projects/${projectId}/tasks`);
+  return data.tasks;
 };
 
-export const moveTask = async (taskId: string, status: string, position: number) => {
-  await apiClient.post(`/tasks/${taskId}/move`, { status, position });
+export const upsertTask = async ({ projectId, id, ...payload }: UpsertTaskPayload): Promise<Task> => {
+  if (id) {
+    const { data } = await apiClient.patch<TaskResponse>(`/projects/${projectId}/tasks/${id}`, payload);
+    return data.task;
+  }
+  const { data } = await apiClient.post<TaskResponse>(`/projects/${projectId}/tasks`, payload);
+  return data.task;
+};
+
+export const moveTask = async (projectId: string, taskId: string, columnId: string, order: number) => {
+  await apiClient.post(`/projects/${projectId}/tasks/${taskId}/move`, { column: columnId, order });
 };
