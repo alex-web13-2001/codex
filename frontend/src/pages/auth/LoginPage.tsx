@@ -29,9 +29,8 @@ const LoginPage = () => {
       const mockUser = {
         id: '1',
         email,
-        fullName: 'Sarah Connor',
-        role: 'owner' as const,
-        locale: 'en'
+        name: 'Sarah Connor',
+        role: 'owner' as const
       };
       setUser(mockUser);
       setToken('mock-token');

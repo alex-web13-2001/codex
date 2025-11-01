@@ -16,10 +16,14 @@ const resetPasswordEmail = (token) => {
   };
 };
 
-const invitationEmail = (projectName, token) => ({
-  subject: `Invitation to ${projectName}`,
-  text: `You have been invited to ${projectName}: ${env.clientUrl}/invitations/${token}`,
-  html: `<p>You have been invited to <b>${projectName}</b></p><p><a href="${env.clientUrl}/invitations/${token}">Accept invitation</a></p>`,
+const invitationEmail = (projectName, token, inviterName, role) => ({
+  subject: `Приглашение в проект «${projectName}»`,
+  text: `${inviterName} пригласил вас в проект ${projectName} с ролью ${role}. Откройте ссылку: ${env.clientUrl}/invitations/${token}`,
+  html: `
+    <p>${inviterName} пригласил вас присоединиться к проекту <b>${projectName}</b>.</p>
+    <p>Вам назначена роль: <b>${role}</b>.</p>
+    <p><a href="${env.clientUrl}/invitations/${token}">Принять приглашение</a></p>
+  `,
 });
 
 module.exports = {

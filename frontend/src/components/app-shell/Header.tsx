@@ -7,8 +7,8 @@ const Header = () => {
   const toggleSidebar = useUIStore((state) => state.toggleSidebar);
   const user = useAuthStore((state) => state.user);
 
-  const initials = user?.fullName
-    ? user.fullName
+  const initials = user?.name
+    ? user.name
         .split(' ')
         .map((segment) => segment[0])
         .join('')

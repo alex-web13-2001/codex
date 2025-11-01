@@ -1,12 +1,12 @@
 import type { ID } from './common';
 
-export type UserRole = 'owner' | 'admin' | 'member' | 'guest';
+export type UserRole = 'owner' | 'collaborator' | 'member' | 'viewer';
 
 export interface User {
   id: ID;
   email: string;
-  fullName: string;
+  name: string;
   avatarUrl?: string;
   role: UserRole;
-  locale: string;
+  locale?: string;
 }

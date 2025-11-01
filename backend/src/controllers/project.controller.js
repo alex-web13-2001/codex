@@ -32,6 +32,18 @@ exports.updateProject = catchAsync(async (req, res) => {
   res.status(httpStatus.OK).json({ project });
 });
 
+exports.archiveProject = catchAsync(async (req, res) => {
+  const project = await projectService.archiveProject(req.params.projectId, req.user.id);
+  eventBus.emit('project:archived', { project });
+  res.status(httpStatus.OK).json({ project });
+});
+
+exports.restoreProject = catchAsync(async (req, res) => {
+  const project = await projectService.restoreProject(req.params.projectId, req.user.id);
+  eventBus.emit('project:restored', { project });
+  res.status(httpStatus.OK).json({ project });
+});
+
 exports.deleteProject = catchAsync(async (req, res) => {
   await projectService.deleteProject(req.params.projectId, req.user.id);
   eventBus.emit('project:deleted', { projectId: req.params.projectId });
@@ -138,13 +150,13 @@ exports.listPersonalTasks = catchAsync(async (req, res) => {
 });
 
 exports.createCategory = catchAsync(async (req, res) => {
-  const category = await categoryService.createCategory(req.params.projectId, req.body);
+  const category = await categoryService.createCategory(req.body);
   eventBus.emit('category:created', { projectId: req.params.projectId, category });
   res.status(httpStatus.CREATED).json({ category });
 });
 
 exports.listCategories = catchAsync(async (req, res) => {
-  const categories = await categoryService.listCategories(req.params.projectId);
+  const categories = await categoryService.listCategories();
   res.status(httpStatus.OK).json({ categories });
 });
 
@@ -160,15 +172,15 @@ exports.deleteCategory = catchAsync(async (req, res) => {
   res.status(httpStatus.NO_CONTENT).send();
 });
 
+exports.listTags = catchAsync(async (req, res) => {
+  const tags = await tagService.listTags();
+  res.status(httpStatus.OK).json({ tags });
+});
+
 exports.createTag = catchAsync(async (req, res) => {
   const tag = await tagService.createTag(req.params.projectId, req.body);
   eventBus.emit('tag:created', { projectId: req.params.projectId, tag });
   res.status(httpStatus.CREATED).json({ tag });
-});
-
-exports.listTags = catchAsync(async (req, res) => {
-  const tags = await tagService.listTags(req.params.projectId);
-  res.status(httpStatus.OK).json({ tags });
 });
 
 exports.updateTag = catchAsync(async (req, res) => {

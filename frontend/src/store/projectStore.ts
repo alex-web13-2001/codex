@@ -4,7 +4,7 @@ import type { Project } from '@/types/project';
 import type { Task, TaskStatus } from '@/types/task';
 import type { ID } from '@/types/common';
 
-const STATUS_ORDER: TaskStatus[] = ['todo', 'in_progress', 'review', 'done'];
+const STATUS_ORDER: TaskStatus[] = ['assigned', 'in_progress', 'done'];
 
 interface ProjectState {
   projects: Project[];
@@ -52,10 +52,11 @@ export const useProjectStore = create<ProjectState>()(
         projects: state.projects.map((project) => {
           if (project.id !== projectId) return project;
 
-          const task = project.tasks.find((item) => item.id === taskId);
+          const tasks = project.tasks ?? [];
+          const task = tasks.find((item) => item.id === taskId);
           if (!task) return project;
 
-          const withoutTask = project.tasks.filter((item) => item.id !== taskId);
+          const withoutTask = tasks.filter((item) => item.id !== taskId);
           const updatedTask: Task = { ...task, status };
 
           const grouped = STATUS_ORDER.reduce<Record<TaskStatus, Task[]>>((acc, key) => {

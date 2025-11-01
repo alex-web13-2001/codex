@@ -17,9 +17,9 @@ const ArchivePage = () => {
           {archived.map((project) => (
             <li key={project.id}>
               <div>
-                <h3>{project.name}</h3>
+                <h3>{project.title}</h3>
                 <p>{project.description}</p>
-                <span>Archived on {formatDate(project.dueDate)}</span>
+                <span>Archived on {formatDate(project.updatedAt)}</span>
               </div>
               <Button type="button" variant="secondary" onClick={() => setActiveProject(project.id)}>
                 Restore

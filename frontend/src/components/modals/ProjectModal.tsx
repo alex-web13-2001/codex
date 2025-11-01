@@ -11,7 +11,7 @@ const ProjectModal = () => {
   const { isProjectModalOpen, toggleProjectModal, activeProjectId, projects, upsertProject } =
     useProjectStore();
   const { categories } = useCatalogStore();
-  const [name, setName] = useState('');
+  const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -20,14 +20,14 @@ const ProjectModal = () => {
 
   useEffect(() => {
     if (!project) {
-      setName('');
+      setTitle('');
       setDescription('');
       setSelectedCategories([]);
       return;
     }
-    setName(project.name);
+    setTitle(project.title);
     setDescription(project.description ?? '');
-    setSelectedCategories(project.categories);
+    setSelectedCategories(project.categories.map((category) => category.title));
   }, [project]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -36,7 +36,7 @@ const ProjectModal = () => {
     try {
       const payload = {
         id: project?.id,
-        name,
+        title,
         description,
         categories: selectedCategories
       };
@@ -48,13 +48,25 @@ const ProjectModal = () => {
       console.error(error);
       const fallback = {
         id: project?.id ?? crypto.randomUUID(),
-        name,
+        title,
         description,
         status: project?.status ?? 'active',
-        dueDate: project?.dueDate ?? new Date().toISOString(),
+        color: project?.color ?? '#2563EB',
+        owner: project?.owner ?? { id: 'me', email: 'me@example.com', name: 'You', role: 'owner' },
         members: project?.members ?? [],
-        categories: selectedCategories,
-        tasks: project?.tasks ?? []
+        categories:
+          project?.categories ??
+          selectedCategories.map((category) => ({
+            id: crypto.randomUUID(),
+            title: category,
+            color: '#CBD5F5'
+          })),
+        tasks: project?.tasks ?? [],
+        tags: project?.tags ?? [],
+        links: project?.links ?? [],
+        files: project?.files ?? [],
+        updatedAt: new Date().toISOString(),
+        createdAt: project?.createdAt ?? new Date().toISOString()
       };
       upsertProject(fallback);
       toast.success(`Project ${project ? 'updated' : 'created'} (offline mode)`);
@@ -71,12 +83,7 @@ const ProjectModal = () => {
       onClose={() => toggleProjectModal(false)}
     >
       <form onSubmit={handleSubmit} className="form-grid">
-        <TextField
-          label="Project name"
-          value={name}
-          onChange={(event) => setName(event.target.value)}
-          required
-        />
+        <TextField label="Project name" value={title} onChange={(event) => setTitle(event.target.value)} required />
         <label className="textarea-field">
           <span>Description</span>
           <textarea
@@ -109,7 +116,7 @@ const ProjectModal = () => {
             })}
           </div>
         </label>
-        <Button type="submit" loading={isSubmitting} disabled={isSubmitting || !name.trim()}>
+        <Button type="submit" loading={isSubmitting} disabled={isSubmitting || !title.trim()}>
           Save project
         </Button>
       </form>

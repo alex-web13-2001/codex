@@ -1,4 +1,4 @@
-import type { Project } from '@/types/project';
+import type { Project, ProjectFile } from '@/types/project';
 import type { Task } from '@/types/task';
 import type { User } from '@/types/user';
 
@@ -6,23 +6,20 @@ const users: User[] = [
   {
     id: '1',
     email: 'sarah.connor@example.com',
-    fullName: 'Sarah Connor',
-    role: 'owner',
-    locale: 'en'
+    name: 'Sarah Connor',
+    role: 'owner'
   },
   {
     id: '2',
     email: 'ivan.petrov@example.com',
-    fullName: 'Ivan Petrov',
-    role: 'member',
-    locale: 'ru'
+    name: 'Ivan Petrov',
+    role: 'member'
   },
   {
     id: '3',
     email: 'amelia.pond@example.com',
-    fullName: 'Amelia Pond',
-    role: 'member',
-    locale: 'en'
+    name: 'Amelia Pond',
+    role: 'member'
   }
 ];
 
@@ -30,42 +27,64 @@ const createTask = (overrides: Partial<Task>): Task => ({
   id: crypto.randomUUID(),
   title: 'Design landing page',
   description: 'Revise hero section and add pricing tiers',
-  status: 'todo',
+  status: 'assigned',
+  priority: 'medium',
   dueDate: new Date().toISOString(),
-  assignees: [users[1]],
-  comments: [],
-  history: [],
+  assignee: users[1],
+  tags: [],
   files: [],
+  columnId: 'col-1',
+  history: [],
   ...overrides
 });
+
+const files: ProjectFile[] = [];
 
 export const mockProjects: Project[] = [
   {
     id: 'p-1',
-    name: 'Marketing website redesign',
+    title: 'Marketing website redesign',
     description: 'Improve conversions and refresh the brand',
     status: 'active',
-    dueDate: new Date().toISOString(),
+    color: '#2563EB',
+    owner: users[0],
+    categories: [],
+    tags: ['design'],
+    links: [{ title: 'Brief', url: 'https://example.com/brief.pdf' }],
+    files,
     members: users,
-    categories: ['Design', 'Marketing'],
-    tasks: [
-      createTask({ status: 'todo', title: 'Collect inspiration shots' }),
-      createTask({ status: 'in_progress', title: 'Implement new hero section' }),
-      createTask({ status: 'review', title: 'QA the about page' }),
-      createTask({ status: 'done', title: 'Set up analytics goals' })
-    ]
+    tasks: [],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
   },
   {
     id: 'p-2',
-    name: 'Mobile app launch',
+    title: 'Mobile app launch',
     description: 'Prepare onboarding flow and release assets',
     status: 'active',
-    dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+    color: '#22C55E',
+    owner: users[0],
+    categories: [],
+    tags: ['mobile'],
+    links: [{ title: 'Roadmap', url: 'https://example.com/roadmap' }],
+    files,
     members: users,
-    categories: ['Development'],
-    tasks: [
-      createTask({ status: 'todo', title: 'Beta test feedback review' }),
-      createTask({ status: 'in_progress', title: 'Integrate push notifications' })
-    ]
+    tasks: [],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
   }
 ];
+
+export const mockTasks: Record<string, Task[]> = {
+  'p-1': [
+    createTask({ status: 'assigned', title: 'Collect inspiration shots', columnId: 'assigned' }),
+    createTask({ status: 'in_progress', title: 'Implement new hero section', columnId: 'in_progress' }),
+    createTask({ status: 'done', title: 'QA the about page', columnId: 'done' })
+  ],
+  'p-2': [createTask({ status: 'assigned', title: 'Beta test feedback review', columnId: 'assigned' })]
+};
+
+export const mockUsers = users;
+
+mockProjects[0].tasks = mockTasks['p-1'];
+mockProjects[1].tasks = mockTasks['p-2'];

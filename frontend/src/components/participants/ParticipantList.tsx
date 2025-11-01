@@ -8,6 +8,13 @@ interface ParticipantListProps {
   onInvite: () => void;
 }
 
+const ROLE_LABELS: Record<User['role'], string> = {
+  owner: 'Owner',
+  collaborator: 'Collaborator',
+  member: 'Member',
+  viewer: 'Viewer'
+};
+
 const ParticipantList = ({ participants, onInvite }: ParticipantListProps) => (
   <div className={styles.wrapper}>
     <header>
@@ -19,12 +26,12 @@ const ParticipantList = ({ participants, onInvite }: ParticipantListProps) => (
     <ul>
       {participants.map((participant) => (
         <li key={participant.id}>
-          <div className={styles.avatar}>{participant.fullName.slice(0, 1).toUpperCase()}</div>
+          <div className={styles.avatar}>{participant.name.slice(0, 1).toUpperCase()}</div>
           <div>
-            <strong>{participant.fullName}</strong>
+            <strong>{participant.name}</strong>
             <span>{participant.email}</span>
           </div>
-          <span className={styles.role}>{participant.role}</span>
+          <span className={styles.role}>{ROLE_LABELS[participant.role] ?? participant.role}</span>
         </li>
       ))}
     </ul>

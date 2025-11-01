@@ -23,17 +23,17 @@ const ProfilePage = () => {
       <PageHeader title="Profile" description="Manage your account and personal preferences." />
       <section className={styles.card}>
         <form className="form-grid">
-          <TextField label="Full name" value={user.fullName} readOnly />
+          <TextField label="Full name" value={user.name} readOnly />
           <TextField label="Email" type="email" value={user.email} readOnly />
           <label className="textarea-field">
             <span>Language</span>
-            <select value={user.locale} onChange={(event) => handleLocaleChange(event.target.value)}>
+            <select value={user.locale ?? 'en'} onChange={(event) => handleLocaleChange(event.target.value)}>
               <option value="en">English</option>
               <option value="ru">Русский</option>
             </select>
           </label>
           <Button type="button" variant="secondary">
-            {t('welcome')}, {user.fullName.split(' ')[0]}!
+            {t('welcome')}, {user.name.split(' ')[0]}!
           </Button>
         </form>
       </section>

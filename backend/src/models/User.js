@@ -10,12 +10,33 @@ const tokenSchema = new mongoose.Schema(
   { _id: false }
 );
 
+const settingsSchema = new mongoose.Schema(
+  {
+    locale: { type: String, default: 'ru' },
+    timezone: { type: String, default: 'Europe/Moscow' },
+    theme: { type: String, enum: ['system', 'light', 'dark'], default: 'system' },
+    notifications: {
+      email: { type: Boolean, default: true },
+      push: { type: Boolean, default: false },
+    },
+  },
+  { _id: false }
+);
+
 const userSchema = new mongoose.Schema(
   {
-    email: { type: String, unique: true, index: true, required: true, lowercase: true },
-    name: { type: String, required: true },
+    email: { type: String, unique: true, index: true, required: true, lowercase: true, trim: true },
+    name: { type: String, required: true, trim: true },
     passwordHash: { type: String, required: true },
     passwordSalt: { type: String, required: true },
+    avatarUrl: { type: String },
+    status: {
+      type: String,
+      enum: ['active', 'pending', 'disabled'],
+      default: 'pending',
+    },
+    lastLoginAt: { type: Date },
+    settings: { type: settingsSchema, default: () => ({}) },
     isEmailVerified: { type: Boolean, default: false },
     roles: { type: [String], default: ['user'] },
     verificationToken: { type: String },

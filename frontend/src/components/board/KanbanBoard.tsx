@@ -13,9 +13,8 @@ import type { Task, TaskStatus } from '@/types/task';
 import { formatDate, isOverdue } from '@/utils/date';
 
 const STATUSES: { key: TaskStatus; label: string }[] = [
-  { key: 'todo', label: 'To Do' },
+  { key: 'assigned', label: 'Assigned' },
   { key: 'in_progress', label: 'In Progress' },
-  { key: 'review', label: 'In Review' },
   { key: 'done', label: 'Done' }
 ];
 
@@ -104,14 +103,14 @@ const KanbanCard = ({ id, task, onClick }: KanbanCardProps) => {
       <h4>{task.title}</h4>
       {task.description ? <p>{task.description}</p> : null}
       <footer>
-        <span className={isOverdue(task.dueDate) ? styles.overdue : undefined}>
-          {formatDate(task.dueDate)}
+        <span className={isOverdue(task.dueDate ?? task.deadline) ? styles.overdue : undefined}>
+          {formatDate(task.dueDate ?? task.deadline)}
         </span>
-        <div className={styles.assignees}>
-          {task.assignees.map((assignee) => (
-            <span key={assignee.id}>{assignee.fullName.slice(0, 1).toUpperCase()}</span>
-          ))}
-        </div>
+        {task.assignee ? (
+          <div className={styles.assignees}>
+            <span>{task.assignee.name.slice(0, 1).toUpperCase()}</span>
+          </div>
+        ) : null}
       </footer>
     </article>
   );

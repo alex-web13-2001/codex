@@ -7,6 +7,8 @@ import EmptyState from '@/components/common/EmptyState';
 import { useProjectStore } from '@/store/projectStore';
 import { useAuthStore } from '@/store/authStore';
 import { mockProjects } from '@/mocks/projects';
+import { fetchProjects } from '@/api/projects';
+import { fetchProjectTasks } from '@/api/tasks';
 import styles from './DashboardPage.module.scss';
 import { disconnectSocket, getSocket } from '@/realtime/socket';
 import { useTranslation } from 'react-i18next';
@@ -26,14 +28,33 @@ const DashboardPage = () => {
   }, [openSidebar]);
 
   useEffect(() => {
-    if (!projects.length) {
-      setProjects(mockProjects);
-      setActiveProject(mockProjects[0].id);
-    }
-  }, [projects.length, setProjects, setActiveProject]);
+    const loadProjects = async () => {
+      try {
+        const data = await fetchProjects();
+        if (!data.length) {
+          setProjects([]);
+          setActiveProject(null);
+          setUser(null);
+          return;
+        }
+
+        const [firstProject, ...rest] = data;
+        const tasks = await fetchProjectTasks(firstProject.id);
+        const enriched = [{ ...firstProject, tasks }, ...rest];
+        setProjects(enriched);
+        setActiveProject(firstProject.id);
+        setUser(firstProject.members?.[0] ?? null);
+      } catch (error) {
+        console.warn('Falling back to mocked projects', error);
+        setProjects(mockProjects);
+        setActiveProject(mockProjects[0]?.id ?? null);
+        setUser(mockProjects[0]?.members?.[0] ?? null);
+      }
+    };
+    void loadProjects();
+  }, [setProjects, setActiveProject, setUser]);
 
   useEffect(() => {
-    setUser(mockProjects[0].members[0]);
     const socket = getSocket();
     return () => {
       socket.off('task:moved');
@@ -66,7 +87,7 @@ const DashboardPage = () => {
           <section className={styles.boardSection}>
             <header>
               <div>
-                <h2>{activeProject.name}</h2>
+                <h2>{activeProject.title}</h2>
                 <p>{activeProject.description}</p>
               </div>
               <Button type="button" variant="ghost" onClick={() => navigate(`/projects/${activeProject.id}`)}>
@@ -74,13 +95,13 @@ const DashboardPage = () => {
               </Button>
             </header>
             <KanbanBoard
-              tasks={activeProject.tasks}
+              tasks={activeProject.tasks ?? []}
               onMoveTask={(taskId, status, index) => moveTask(activeProject.id, taskId, status, index)}
             />
           </section>
-          <aside className={styles.sidebar}> 
+          <aside className={styles.sidebar}>
             <ParticipantList
-              participants={activeProject.members}
+              participants={activeProject.members ?? []}
               onInvite={() => navigate('/invitation')}
             />
           </aside>

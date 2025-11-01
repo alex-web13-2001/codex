@@ -13,8 +13,7 @@ import { useNavigate } from 'react-router-dom';
 const statusFilters = [
   { label: 'All', value: 'all' },
   { label: 'Active', value: 'active' },
-  { label: 'Archived', value: 'archived' },
-  { label: 'Completed', value: 'completed' }
+  { label: 'Archived', value: 'archived' }
 ] as const;
 
 type StatusFilter = (typeof statusFilters)[number]['value'];
@@ -51,16 +50,30 @@ const ProjectsPage = () => {
       </div>
       <InfiniteTable
         columns={[
-          { key: 'name', header: 'Name' },
           {
-            key: 'dueDate',
-            header: 'Deadline',
-            render: (project) => formatDate(project.dueDate)
+            key: 'title',
+            header: 'Project',
+            render: (project) => (
+              <div>
+                <strong>{project.title}</strong>
+                <p className="muted">{project.description}</p>
+              </div>
+            )
+          },
+          {
+            key: 'owner',
+            header: 'Owner',
+            render: (project) => project.owner?.name ?? '—'
           },
           {
             key: 'status',
             header: 'Status',
             render: (project) => <span className={`badge badge-${project.status}`}>{project.status}</span>
+          },
+          {
+            key: 'updatedAt',
+            header: 'Updated',
+            render: (project) => formatDate(project.updatedAt)
           },
           {
             key: 'actions',
